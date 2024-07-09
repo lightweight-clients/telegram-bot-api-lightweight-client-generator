@@ -14,7 +14,7 @@
         "no-deps"
     ],
     "scripts": {
-        "generate": "tsx ./src/generator.ts",
+        "start": "tsx ./src/generator.ts",
         "lint": "eslint --ext .ts **/*.ts"
     },
     "type": "module",

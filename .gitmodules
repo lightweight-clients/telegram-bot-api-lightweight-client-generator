@@ -1,0 +1,3 @@
+[submodule "tgscraper"]
+	path = tgscraper
+	url = https://github.com/Sysbot-org/tgscraper.git
