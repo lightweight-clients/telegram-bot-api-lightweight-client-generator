@@ -17,9 +17,9 @@ $changelog = Get-Content ./CHANGELOG.md
 $changelog[4] = $updateText, $changelog[4]
 $changelog | Set-Content ./CHANGELOG.md
 
+# Update version in package.json
+npm version $version --no-git-tag-version
+
 # Commit changes
 git add .
 git commit -m "Support API v$version"
-
-# Update version in package.json
-npm version $version --no-git-tag-version
