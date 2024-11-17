@@ -1,10 +1,15 @@
-$cd = Get-Location
+$image = "telegram-bot-api-lightweight-client-generator:latest"
 
-docker build $cd\tgscraper -t tgscraper:latest
+Write-Host "Cleaning up output folder"
+Remove-Item -Recurse -Force output
 
-Remove-Item -Recurse -Force $cd\schema
-mkdir $cd\schema
-docker run --rm -v $cd\schema:/out tgscraper:latest app:export-schema --openapi /out/openapi.json
+Write-Host "Building $image"
+docker build -t $image --progress=plain . # --no-cache
 
-npm i
-npm start
+Write-Host "Copying results"
+docker run --rm -v ${PWD}/output:/container-artifacts $image cp -r /results/. /container-artifacts/
+
+Write-Host "Removing $image"
+docker image remove $image
+
+Write-Host "Done"
