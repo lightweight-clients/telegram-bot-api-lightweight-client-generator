@@ -12,4 +12,7 @@ docker run --rm -v ${PWD}/output:/container-artifacts $image cp -r /results/. /c
 Write-Host "Removing $image"
 docker image remove $image
 
+Write-Host "Applying changes to the submodule"
+./apply-changes-to-submodule.ps1
+
 Write-Host "Done"

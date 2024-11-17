@@ -1,3 +1,6 @@
 [submodule "tgscraper"]
 	path = tgscraper
 	url = https://github.com/Sysbot-org/tgscraper.git
+[submodule "client"]
+	path = client
+	url = git@github.com:HRAshton/telegram-bot-api-lightweight-client.git
