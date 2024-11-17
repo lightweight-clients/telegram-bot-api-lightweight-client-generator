@@ -4,6 +4,6 @@
 
 export interface OpenApi {
     paths: {
-        [path: string]: EndpointData
+        [path: string]: EndpointData;
     };
 }

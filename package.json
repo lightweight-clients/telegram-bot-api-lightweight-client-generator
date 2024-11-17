@@ -14,8 +14,11 @@
         "no-deps"
     ],
     "scripts": {
-        "start": "tsx ./src/generator.ts",
-        "lint": "eslint --ext .ts **/*.ts"
+        "generate-client": "tsx ./src/generator.ts",
+        "format": "prettier --write **/*.ts",
+        "lint": "eslint .",
+        "test": "jest",
+        "start": "npm run generate-client && npm run format && npm run lint"
     },
     "type": "module",
     "declaration": true,
@@ -26,14 +29,15 @@
     },
     "devDependencies": {
         "@hey-api/openapi-ts": "^0.47.1",
-        "@types/eslint": "^8.56.10",
-        "@types/jest": "^29.5.12",
-        "@typescript-eslint/eslint-plugin": "^5.62.0",
-        "@typescript-eslint/parser": "^5.62.0",
-        "eslint": "^8.57.0",
-        "generate-license-file": "^3.4.0",
-        "tsx": "^4.15.6",
-        "typescript": "^5.5.2"
+        "@types/eslint": "^9.6.1",
+        "@types/jest": "^29.5.14",
+        "@typescript-eslint/eslint-plugin": "^8.14.0",
+        "@typescript-eslint/parser": "^8.14.0",
+        "eslint": "^9.15.0",
+        "generate-license-file": "^3.6.0",
+        "prettier": "3.3.3",
+        "tsx": "^4.19.2",
+        "typescript": "^5.6.3"
     },
     "author": "HRAshton",
     "license": "MIT",

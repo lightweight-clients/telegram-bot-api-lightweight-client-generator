@@ -2,4 +2,4 @@
     if (!condition) {
         throw new Error('Condition is not met');
     }
-}
+};

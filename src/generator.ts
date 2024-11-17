@@ -14,7 +14,7 @@ const endpointToTypesPair = (endpoint: string) => {
     const endpointType = endpointName.charAt(0).toUpperCase() + endpointName.slice(1);
 
     return [`${endpointType}Data`, `${endpointType}Response`];
-}
+};
 
 const getClientEndpoint = (endpointId: string, endpointData: EndpointData, template: string) => {
     const endpoint = endpointId.substring(1);
@@ -30,7 +30,7 @@ const getClientEndpoint = (endpointId: string, endpointData: EndpointData, templ
         .replace(/_ENDPOINT_/g, endpoint)
         .replace(/_REQUEST_TYPE_/g, requestType)
         .replace(/_RESPONSE_TYPE_/g, responseType);
-}
+};
 
 const generateClient = async (openApi: OpenApi, output: string) => {
     const endpoints = openApi.paths;
@@ -56,7 +56,7 @@ const generateClient = async (openApi: OpenApi, output: string) => {
     ];
 
     fs.writeFileSync(output, clientContent.join('\n'));
-}
+};
 
 export const generate = async () => {
     await createClient({
@@ -71,14 +71,16 @@ export const generate = async () => {
     ensure('paths' in openApi);
 
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    await transform('./.tmp/client/types.gen.ts', `${OUTPUT_DIR}/types.d.ts`);
+    await transform('./.tmp/client/types.gen.ts', `${OUTPUT_DIR}/types.ts`);
     await generateClient(openApi as OpenApi, `${OUTPUT_DIR}/client.ts`);
     fs.copyFileSync('./src/templates/index.ts', `${OUTPUT_DIR}/index.ts`);
     fs.copyFileSync('./src/templates/core.ts', `${OUTPUT_DIR}/core.ts`);
-}
+};
 
-generate().then(() => {
-    console.log('Done')
-}).catch((e) => {
-    console.error(e)
-})
+generate()
+    .then(() => {
+        console.log('Done');
+    })
+    .catch((e) => {
+        console.error(e);
+    });

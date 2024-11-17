@@ -13,5 +13,5 @@ import { client_fetch } from './core';
  */
 export const _ENDPOINT_ = async (args: types._REQUEST_TYPE_): Promise<types._RESPONSE_TYPE_> => {
     return await client_fetch<types._REQUEST_TYPE_, types._RESPONSE_TYPE_>('_ENDPOINT_', args);
-}
+};
 //%>
