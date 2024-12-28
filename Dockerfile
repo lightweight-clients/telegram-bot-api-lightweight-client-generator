@@ -1,7 +1,10 @@
-﻿FROM ghcr.io/sysbot-org/tgscraper:latest AS tgscraper
+﻿# Generates OpenAPI schema from the most recent version of the Telegram API
+FROM ghcr.io/sysbot-org/tgscraper:latest AS tgscraper
 
 RUN php /app/vendor/bin/tgscraper app:export-schema --openapi /out/openapi.json
 
+
+# Generates the TypeScript client from the OpenAPI schema
 FROM node:23-alpine AS node
 
 VOLUME /results

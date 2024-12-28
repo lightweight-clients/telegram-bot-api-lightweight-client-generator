@@ -11,6 +11,8 @@ jobs:
     outputs:
       api_version: ${{ steps.fetch-api-version.outputs.api_version }}
       package_version: ${{ steps.fetch-version.outputs.package_version }}
+      updated: >-
+        ${{ ! startsWith(steps.fetch-version.outputs.package_version, steps.fetch-api-version.outputs.api_version) }}
     steps:
       - name: Fetch latest NPM package version
         id: fetch-version
@@ -18,7 +20,7 @@ jobs:
           # Fetch the latest version of the NPM package via HTTP request
           http_content=$(curl -s https://registry.npmjs.org/telegram-bot-api-lightweight-client/latest)
           version=$(echo $http_content | jq -r '.version')
-          echo "package_version=$version" >> "$GITHUB_OUTPUT"
+          # echo "package_version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Fetch latest Telegram Bot API version
         id: fetch-api-version
@@ -31,7 +33,9 @@ jobs:
   create-issue:
     runs-on: ubuntu-latest
     needs: compare-versions
-    if: ${{ ! startsWith(needs.compare-versions.outputs.package_version, needs.compare-versions.outputs.api_version) }}
+    if: ${{ needs.compare-versions.outputs.updated == 'true' }}
+    outputs:
+      issue_url: ${{ steps.create-issue.outputs.url }}
     steps:
       - uses: actions/checkout@v3
 
@@ -45,3 +49,52 @@ jobs:
         with:
           update_existing: true
           search_existing: all
+
+  update-submodule:
+    runs-on: ubuntu-latest
+    needs: compare-versions
+    if: ${{ needs.compare-versions.outputs.updated == 'true' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Run generator and copy generated files to ./output
+        run: bash ./build-and-commit.sh
+
+      - name: Create new branch for submodule
+        working-directory: ./client
+        run: git checkout -b "new_version/${{ needs.compare-versions.outputs.api_version }}" origin/master
+
+      - name: Update submodule's files
+        working-directory: ./client
+        run: bash ../apply-changes-to-submodule.sh ${{ needs.compare-versions.outputs.api_version }}
+
+      - name: Verify version
+        working-directory: ./client
+        run: |
+          api_version=${{ needs.compare-versions.outputs.api_version }}.0
+          openapi_version=$(jq -r '.info.version' ./schema/openapi.json)
+          branch_version=$(git rev-parse --abbrev-ref HEAD | grep -oP '(?<=/)([\d\.]+)').0
+
+          echo "API version: $api_version"
+          echo "OpenAPI version: $openapi_version"
+          echo "Branch version: $branch_version"
+
+          if [[ $openapi_version != $api_version || $api_version != $branch_version ]]; then
+              echo "Versions do not match"
+              exit 60
+          fi
+
+          if [[ ! $branch_version =~ ^[0-9]+\.[0-9]+\.0$ ]]; then
+              echo "Version has incorrect format"
+              exit 61
+          fi
+
+      - name: Push changes
+        working-directory: ./client
+        run: |
+          SUBMODULE_URL=$(git config --file ../.gitmodules submodule.client.url)
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@${SUBMODULE_URL#https://}
+          git push origin "new_version/${{ needs.compare-versions.outputs.api_version }}"
