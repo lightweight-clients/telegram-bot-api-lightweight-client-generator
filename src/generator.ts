@@ -19,8 +19,7 @@ const fetchSpecification = async (url: string): Promise<OpenApi> => {
 
 export const generate = async () => {
     const OPENAPI_URL = 'https://raw.githubusercontent.com/lightweight-clients/schemas/refs/heads/master/schemas/telegram-bot-api/openapi.json';
-    const OUTPUT_DIR = path.resolve('C:\\Users\\Some\\RiderProjects\\telegram-bot-api-lightweight-client\\src'); // todo
-    // const OUTPUT_DIR = path.resolve('./output');
+    const OUTPUT_DIR = path.resolve('./output');
 
     const openApi = await fetchSpecification(OPENAPI_URL);
 
