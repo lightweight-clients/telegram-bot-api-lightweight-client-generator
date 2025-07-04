@@ -1,40 +1,92 @@
-﻿import * as fs from 'node:fs';
+﻿import type { OpenApi } from './types';
+import * as config from './config.json';
+import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { OpenApi } from './types';
-import { generateClient } from './generators/client-generator';
-import { generateSimpleTypes } from './generators/simple-types-generator';
 import assert from 'node:assert';
-import { generateTypes } from './generators/types-generator';
+import { Eta } from 'eta';
+import { createClient } from '@hey-api/openapi-ts';
 
-const fetchSpecification = async (url: string): Promise<OpenApi> => {
-    console.log('Fetching specification');
+interface EndpointRenderData {
+  name: string;
+  description: string;
+  baseEndpointName: string;
+}
 
-    const openApiRes = await fetch(url);
-    const openApi = await openApiRes.json();
-    assert(openApi && typeof openApi === 'object');
-    assert('paths' in openApi);
+interface ClientRenderData {
+  endpoints: EndpointRenderData[];
+}
 
-    return openApi;
+const fetchSpecification = async (): Promise<OpenApi> => {
+  console.log('Fetching specification...');
+
+  const openApiRes = await fetch(config.specification_url);
+  const openApi = await openApiRes.json();
+  assert(openApi && typeof openApi === 'object');
+  assert('paths' in openApi);
+
+  return openApi;
+};
+
+const getClientRenderData = (openApi: OpenApi): ClientRenderData => {
+  const endpoints: EndpointRenderData[] = [];
+  for (const [path, methods] of Object.entries(openApi.paths)) {
+    assert(path.startsWith('/'), `Path ${path} should start with a slash`);
+    assert(path.split('/').length === 2, `Path ${path} should not have nested paths`);
+    assert(methods['description'], `Path ${path} should have a description`);
+    assert(methods['post'], `Path ${path} should have a POST method`);
+    assert(Object.keys(methods).length === 2, `Path ${path} should have exactly two methods (desc and POST)`);
+
+    const endpoint: EndpointRenderData = {
+      name: path.slice(1),
+      description: methods.description || '',
+      baseEndpointName: path.charAt(1).toUpperCase() + path.slice(2),
+    };
+    endpoints.push(endpoint);
+  }
+  return { endpoints };
+};
+
+const generateEtaFile = async (fileName: string, data: ClientRenderData | object): Promise<void> => {
+  console.log(`Generating ${fileName}.eta...`);
+
+  const eta = new Eta({ views: path.resolve(__dirname, 'templates') });
+  const content = await eta.renderAsync(`${fileName}.eta`, data);
+  await fs.promises.writeFile(`${config.output_folder}/${fileName}.ts`, content, 'utf-8');
+};
+
+const generateTypesFile = async (openApi: OpenApi, outputPath: string): Promise<void> => {
+  await createClient({
+    input: openApi,
+    output: {
+      path: './.tmp/client',
+      clean: true,
+      format: false,
+      lint: false,
+    },
+    plugins: ['@hey-api/client-fetch'],
+  });
+
+  fs.copyFileSync('./.tmp/client/types.gen.ts', outputPath);
 };
 
 export const generate = async () => {
-    const OPENAPI_URL = 'https://raw.githubusercontent.com/lightweight-clients/schemas/refs/heads/master/schemas/telegram-bot-api/openapi.json';
-    const OUTPUT_DIR = path.resolve('./output');
+  const openApi = await fetchSpecification();
 
-    const openApi = await fetchSpecification(OPENAPI_URL);
+  const renderData = getClientRenderData(openApi);
 
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-    fs.copyFileSync('./src/templates/index.ts', `${OUTPUT_DIR}/index.ts`);
-    fs.copyFileSync('./src/templates/core.ts', `${OUTPUT_DIR}/core.ts`);
-    await generateClient(openApi, `${OUTPUT_DIR}/client.ts`);
-    await generateSimpleTypes(openApi, `${OUTPUT_DIR}/simple-types.ts`);
-    await generateTypes(openApi, `${OUTPUT_DIR}/types.ts`);
+  fs.mkdirSync(config.output_folder, { recursive: true });
+
+  await generateEtaFile('core', {});
+  await generateEtaFile('index', {});
+  await generateEtaFile('client', renderData);
+  await generateEtaFile('simple-types', renderData);
+  await generateTypesFile(openApi, `${config.output_folder}/types.ts`);
 };
 
 generate()
-    .then(() => {
-        console.log('Done');
-    })
-    .catch((e) => {
-        console.error(e);
-    });
+  .then(() => {
+    console.log('Done');
+  })
+  .catch((e) => {
+    console.error(e);
+  });
