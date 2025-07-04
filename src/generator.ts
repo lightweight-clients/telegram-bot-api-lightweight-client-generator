@@ -55,10 +55,11 @@ const generateEtaFile = async (fileName: string, data: ClientRenderData | object
 };
 
 const generateTypesFile = async (openApi: OpenApi, outputPath: string): Promise<void> => {
+  const tempClientFolder = path.resolve(config.temp_folder, '.tmp', 'client');
   await createClient({
     input: openApi,
     output: {
-      path: './.tmp/client',
+      path: tempClientFolder,
       clean: true,
       format: false,
       lint: false,
@@ -66,7 +67,7 @@ const generateTypesFile = async (openApi: OpenApi, outputPath: string): Promise<
     plugins: ['@hey-api/client-fetch'],
   });
 
-  fs.copyFileSync('./.tmp/client/types.gen.ts', outputPath);
+  fs.copyFileSync(path.join(tempClientFolder, 'types.gen.ts'), outputPath);
 };
 
 export const generate = async () => {
