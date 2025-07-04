@@ -7,20 +7,16 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.1
         version: 3.3.1
       '@eslint/js':
         specifier: ^9.30.1
         version: 9.30.1
-    devDependencies:
       '@hey-api/openapi-ts':
         specifier: ^0.77.0
         version: 0.77.0(typescript@5.8.3)
-      '@types/eslint':
-        specifier: ^9.6.1
-        version: 9.6.1
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.10
@@ -335,9 +331,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@types/eslint@9.6.1':
-    resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
@@ -1478,11 +1471,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
-
-  '@types/eslint@9.6.1':
-    dependencies:
-      '@types/estree': 1.0.8
-      '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.8': {}
 
