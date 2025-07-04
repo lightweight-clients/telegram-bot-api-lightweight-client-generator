@@ -6,7 +6,7 @@ let baseUrl: string | undefined = undefined;
  * @internal
  * Fetches data from the Telegram Bot API.
  *
- * @param path - The API endpoint to fetch data from, e.g., '/getMe'.
+ * @param path - The API endpoint to fetch data from, e.g., 'getMe'.
  * @param args - The input arguments for the API call, which will be sent as JSON in the request body.
  *
  * @returns A promise that resolves to the output data from the API call, parsed as JSON.
