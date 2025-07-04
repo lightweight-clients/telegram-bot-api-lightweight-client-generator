@@ -1,52 +1,23 @@
 {
-    "name": "telegram-bot-api-lightweight-client",
-    "version": "7.0.0.0",
-    "description": "Lightweight Telegram Bot API client. Exports only minimal Fetch call. Fully compatible with AWS LLRT.",
-    "keywords": [
-        "telegram",
-        "telegram bot",
-        "telegram bot api",
-        "bot",
-        "fetch",
-        "llrt",
-        "async",
-        "lightweight",
-        "no-deps"
-    ],
-    "scripts": {
-        "generate-client": "tsx ./src/generator.ts",
-        "format": "prettier --write **/*.ts",
-        "lint": "eslint .",
-        "test": "jest",
-        "start": "npm run generate-client && npm run format && npm run lint"
-    },
-    "type": "module",
-    "declaration": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "engines": {
-        "node": ">=0.12"
-    },
-    "devDependencies": {
-        "@hey-api/openapi-ts": "^0.47.1",
-        "@types/eslint": "^9.6.1",
-        "@types/jest": "^29.5.14",
-        "@typescript-eslint/eslint-plugin": "^8.14.0",
-        "@typescript-eslint/parser": "^8.14.0",
-        "eslint": "^9.15.0",
-        "generate-license-file": "^3.6.0",
-        "prettier": "3.3.3",
-        "tsx": "^4.19.2",
-        "typescript": "^5.6.3"
-    },
-    "author": "HRAshton",
-    "license": "MIT",
-    "homepage": "https://github.com/HRAshton/telegram-bot-api-lightweight-client",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/HRAshton/telegram-bot-api-lightweight-client.git"
-    },
-    "bugs": {
-        "url": "https://github.com/HRAshton/telegram-bot-api-lightweight-client/issues"
-    }
+  "name": "telegram-bot-api-lightweight-client-generator",
+  "scripts": {
+    "generate-client": "tsx ./src/generator.ts",
+    "format": "prettier --write **/*.ts",
+    "lint": "eslint .",
+    "test": "vitest",
+    "start": "npm run generate-client && npm run format && npm run lint"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.67.1",
+    "@types/eslint": "^9.6.1",
+    "@types/node": "^22.15.3",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "depcheck": "^1.4.7",
+    "eslint": "^9.26.0",
+    "prettier": "3.5.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
 }

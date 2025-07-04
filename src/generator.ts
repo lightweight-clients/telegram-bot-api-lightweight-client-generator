@@ -1,9 +1,9 @@
 ﻿import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { createClient } from '@hey-api/openapi-ts';
+import { ensure } from './utils/ensure';
 import { transform } from './types-transformer';
 import { EndpointData, OpenApi } from './types';
-import { ensure } from './utils/ensure';
-import * as path from 'node:path';
 
 const OPENAPI_PATH = path.resolve('./schema/openapi.json');
 const OUTPUT_DIR = path.resolve('./output');
@@ -62,7 +62,7 @@ export const generate = async () => {
     await createClient({
         input: OPENAPI_PATH,
         output: './.tmp/client',
-        client: 'fetch',
+        plugins: ['@hey-api/client-fetch'],
     });
     console.log('Client generated');
 
