@@ -7,11 +7,6 @@
     "resolveJsonModule": true,
     "strict": true
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "src/templates"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }
