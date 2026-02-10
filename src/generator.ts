@@ -1,4 +1,4 @@
-﻿import type { OpenApi } from './types';
+﻿import type { OpenApi } from './types.js';
 import * as config from './config.json';
 import * as fs from 'node:fs';
 import * as path from 'node:path';

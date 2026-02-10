@@ -6,8 +6,8 @@
  * Configure the client via 'core.ts'.
  */
 
-import type * as simpleTypes from './simple-types';
-import { client_fetch } from './core';
+import type * as simpleTypes from './simple-types.js';
+import { client_fetch } from './core.js';
 
 <% it.endpoints.forEach(endpoint => { %>
 

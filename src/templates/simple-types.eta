@@ -1,6 +1,6 @@
 ﻿// noinspection JSUnusedGlobalSymbols
 
-import type * as types from './types';
+import type * as types from './types.js';
 <% it.endpoints.forEach((type) => { %>
 
 // Types for /<%= type.name %>
